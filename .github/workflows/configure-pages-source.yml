@@ -1,0 +1,36 @@
+name: Configure GitHub Pages source
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Point Pages to gh-pages branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          if gh api "repos/${GITHUB_REPOSITORY}/pages" >/dev/null 2>&1; then
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" \
+              -f build_type=legacy \
+              -f source[branch]=gh-pages \
+              -f source[path]=/
+          else
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/pages" \
+              -f build_type=legacy \
+              -f source[branch]=gh-pages \
+              -f source[path]=/
+          fi
+
+      - name: Request Pages rebuild
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds" || true
