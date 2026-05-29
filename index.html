@@ -4,6 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Simulador Copa do Mundo 2026</title>
+    <script>
+      window.addEventListener("load", () => {
+        const applyFavicon = () => {
+          const logo = document.querySelector(".wc-logo-img");
+          if (!logo?.src) return false;
+
+          let favicon = document.querySelector("link[rel='icon']");
+          if (!favicon) {
+            favicon = document.createElement("link");
+            favicon.rel = "icon";
+            document.head.appendChild(favicon);
+          }
+          favicon.type = "image/png";
+          favicon.href = logo.src;
+          return true;
+        };
+
+        if (applyFavicon()) return;
+        const timer = window.setInterval(() => {
+          if (applyFavicon()) window.clearInterval(timer);
+        }, 100);
+        window.setTimeout(() => window.clearInterval(timer), 5000);
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
