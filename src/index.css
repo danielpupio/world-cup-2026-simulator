@@ -121,6 +121,19 @@ button, input, select {
   filter: drop-shadow(0 14px 22px rgba(8, 145, 178, 0.28));
 }
 
+.stadium-shell aside > div.grid.grid-cols-3 > div {
+  min-width: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.stadium-shell aside > div.grid.grid-cols-3 > div > div:last-child {
+  font-size: 10px;
+  line-height: 1.1;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
 @media (min-width: 640px) {
   .wc-logo-img {
     width: 70px;
