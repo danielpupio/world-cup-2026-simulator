@@ -4,6 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Simulador Copa do Mundo 2026</title>
+    <style>
+      .wc-fifa-rank {
+        margin-left: 0.25rem;
+        color: rgba(148, 163, 184, 0.78);
+        font-size: 0.72em;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      td .wc-fifa-rank {
+        color: rgba(203, 213, 225, 0.72);
+        font-size: 0.78em;
+      }
+    </style>
     <script>
       window.addEventListener("load", () => {
         const applyFavicon = () => {
@@ -86,18 +100,27 @@
           if (!root) return;
 
           root.querySelectorAll("div,td").forEach((element) => {
+            if (element.querySelector(".wc-fifa-rank")) return;
+
             const classes = String(element.className || "");
             const isManualTeam = element.tagName === "DIV" && classes.includes("text-lg") && classes.includes("font-black") && classes.includes("text-white");
             const isLiveTableTeam = element.tagName === "TD" && classes.includes("font-bold") && classes.includes("text-white");
             if (!isManualTeam && !isLiveTableTeam) return;
 
             const text = element.textContent.trim();
-            if (!text || text.includes(" x ") || text.includes("º FIFA")) return;
+            if (!text || text.includes(" x ")) return;
 
-            const match = Object.entries(teamRankings).find(([team]) => text === team || text.endsWith(` ${team}`));
+            const cleanText = text
+              .replace(/\s·\s\d+º FIFA$/, "")
+              .replace(/\s\(\d+º FIFA\)$/, "");
+            const match = Object.entries(teamRankings).find(([team]) => cleanText === team || cleanText.endsWith(` ${team}`));
             if (!match) return;
 
-            element.textContent = `${text} · ${match[1]}º FIFA`;
+            element.textContent = cleanText;
+            const ranking = document.createElement("span");
+            ranking.className = "wc-fifa-rank";
+            ranking.textContent = `(${match[1]}º FIFA)`;
+            element.append(" ", ranking);
           });
         };
 
