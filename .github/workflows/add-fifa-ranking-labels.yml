@@ -1,0 +1,118 @@
+name: Add FIFA ranking labels
+
+on:
+  push:
+    paths:
+      - .github/workflows/add-fifa-ranking-labels.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch App.jsx
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('src/App.jsx')
+          text = path.read_text()
+
+          rankings = '''
+const teamRankings = {
+  "França": 1,
+  "Espanha": 2,
+  "Argentina": 3,
+  "Inglaterra": 4,
+  "Portugal": 5,
+  "Brasil": 6,
+  "Holanda": 7,
+  "Marrocos": 8,
+  "Bélgica": 9,
+  "Alemanha": 10,
+  "Croácia": 11,
+  "Colômbia": 13,
+  "Senegal": 14,
+  "México": 15,
+  "Estados Unidos": 16,
+  "Uruguai": 17,
+  "Japão": 18,
+  "Suíça": 19,
+  "Irã": 21,
+  "Turquia": 22,
+  "Equador": 23,
+  "Áustria": 24,
+  "República da Coreia": 25,
+  "Austrália": 27,
+  "Argélia": 28,
+  "Egito": 29,
+  "Canadá": 30,
+  "Noruega": 31,
+  "Panamá": 33,
+  "Costa do Marfim": 34,
+  "Suécia": 38,
+  "Paraguai": 40,
+  "República Tcheca": 41,
+  "Escócia": 43,
+  "Tunísia": 44,
+  "República Democrática do Congo": 46,
+  "Uzbequistão": 50,
+  "Catar": 55,
+  "Iraque": 57,
+  "África do Sul": 60,
+  "Arábia Saudita": 61,
+  "Jordânia": 63,
+  "Bósnia e Herzegovina": 65,
+  "Cabo Verde": 69,
+  "Gana": 74,
+  "Curaçau": 82,
+  "Haiti": 83,
+  "Nova Zelândia": 85
+};
+'''
+
+          if 'const teamRankings = {' not in text:
+            marker = 'const countryFlags = {'
+            text = text.replace(marker, rankings + '\n' + marker)
+
+          old = '''function flagTeam(team) {
+  if (!team) return "";
+  return teamFlags[team] ? `${teamFlags[team]} ${team}` : team;
+}
+'''
+          new = '''function fifaRankingLabel(team) {
+  const rank = teamRankings[team];
+  return rank ? `${rank}º FIFA` : "";
+}
+
+function flagTeam(team, options = {}) {
+  if (!team) return "";
+  const label = teamFlags[team] ? `${teamFlags[team]} ${team}` : team;
+  const ranking = fifaRankingLabel(team);
+  return options.showRanking && ranking ? `${label} · ${ranking}` : label;
+}
+'''
+          if old in text:
+            text = text.replace(old, new)
+
+          text = text.replace('{flagTeam(team)}</div>', '{flagTeam(team, { showRanking: true })}</div>', 1)
+          text = text.replace('{flagTeam(row.team)}</td>', '{flagTeam(row.team, { showRanking: true })}</td>', 1)
+
+          path.write_text(text)
+          PY
+      - name: Commit changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/App.jsx
+          git commit -m "Show FIFA ranking positions on group views"
+          git push
