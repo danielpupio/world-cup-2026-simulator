@@ -27,7 +27,7 @@ const teamFlags = {
   "Brasil": "🇧🇷",
   "Marrocos": "🇲🇦",
   "Haiti": "🇭🇹",
-  "Escócia": "🏴",
+  "Escócia": "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}",
   "Estados Unidos": "🇺🇸",
   "Paraguai": "🇵🇾",
   "Austrália": "🇦🇺",
@@ -60,7 +60,7 @@ const teamFlags = {
   "República Democrática do Congo": "🇨🇩",
   "Uzbequistão": "🇺🇿",
   "Colômbia": "🇨🇴",
-  "Inglaterra": "🏴",
+  "Inglaterra": "\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}",
   "Croácia": "🇭🇷",
   "Gana": "🇬🇭",
   "Panamá": "🇵🇦"
