@@ -116,3 +116,5 @@ function flagTeam(team, options = {}) {
           git add src/App.jsx
           git commit -m "Show FIFA ranking positions on group views"
           git push
+
+# trigger: 2026-06-01 ranking labels
