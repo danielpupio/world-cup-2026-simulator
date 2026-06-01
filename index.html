@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulador Copa do Mundo 2026</title>
+    <style>
+      .wc-fifa-rank {
+        margin-left: 0.25rem;
+        color: rgba(148, 163, 184, 0.78);
+        font-size: 0.72em;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      td .wc-fifa-rank {
+        color: rgba(203, 213, 225, 0.72);
+        font-size: 0.78em;
+      }
+    </style>
+    <script>
+      window.addEventListener("load", () => {
+        const applyFavicon = () => {
+          const logo = document.querySelector(".wc-logo-img");
+          if (!logo?.src) return false;
+
+          let favicon = document.querySelector("link[rel='icon']");
+          if (!favicon) {
+            favicon = document.createElement("link");
+            favicon.rel = "icon";
+            document.head.appendChild(favicon);
+          }
+          favicon.type = "image/png";
+          favicon.href = logo.src;
+          return true;
+        };
+
+        if (applyFavicon()) return;
+        const timer = window.setInterval(() => {
+          if (applyFavicon()) window.clearInterval(timer);
+        }, 100);
+        window.setTimeout(() => window.clearInterval(timer), 5000);
+      });
+    </script>
+    <script>
+      window.addEventListener("load", () => {
+        const teamRankings = {
+          "França": 1,
+          "Espanha": 2,
+          "Argentina": 3,
+          "Inglaterra": 4,
+          "Portugal": 5,
+          "Brasil": 6,
+          "Holanda": 7,
+          "Marrocos": 8,
+          "Bélgica": 9,
+          "Alemanha": 10,
+          "Croácia": 11,
+          "Colômbia": 13,
+          "Senegal": 14,
+          "México": 15,
+          "Estados Unidos": 16,
+          "Uruguai": 17,
+          "Japão": 18,
+          "Suíça": 19,
+          "Irã": 21,
+          "Turquia": 22,
+          "Equador": 23,
+          "Áustria": 24,
+          "República da Coreia": 25,
+          "Austrália": 27,
+          "Argélia": 28,
+          "Egito": 29,
+          "Canadá": 30,
+          "Noruega": 31,
+          "Panamá": 33,
+          "Costa do Marfim": 34,
+          "Suécia": 38,
+          "Paraguai": 40,
+          "República Tcheca": 41,
+          "Escócia": 43,
+          "Tunísia": 44,
+          "República Democrática do Congo": 46,
+          "Uzbequistão": 50,
+          "Catar": 55,
+          "Iraque": 57,
+          "África do Sul": 60,
+          "Arábia Saudita": 61,
+          "Jordânia": 63,
+          "Bósnia e Herzegovina": 65,
+          "Cabo Verde": 69,
+          "Gana": 74,
+          "Curaçau": 82,
+          "Haiti": 83,
+          "Nova Zelândia": 85
+        };
+
+        const decorateRankings = () => {
+          const root = document.querySelector("#root");
+          if (!root) return;
+
+          root.querySelectorAll("div,td").forEach((element) => {
+            if (element.querySelector(".wc-fifa-rank")) return;
+
+            const classes = String(element.className || "");
+            const isManualTeam = element.tagName === "DIV" && classes.includes("text-lg") && classes.includes("font-black") && classes.includes("text-white");
+            const isLiveTableTeam = element.tagName === "TD" && classes.includes("font-bold") && classes.includes("text-white");
+            if (!isManualTeam && !isLiveTableTeam) return;
+
+            const text = element.textContent.trim();
+            if (!text || text.includes(" x ")) return;
+
+            const cleanText = text
+              .replace(/\s·\s\d+º FIFA$/, "")
+              .replace(/\s\(\d+º FIFA\)$/, "");
+            const match = Object.entries(teamRankings).find(([team]) => cleanText === team || cleanText.endsWith(` ${team}`));
+            if (!match) return;
+
+            element.textContent = cleanText;
+            const ranking = document.createElement("span");
+            ranking.className = "wc-fifa-rank";
+            ranking.textContent = `(${match[1]}º FIFA)`;
+            element.append(" ", ranking);
+          });
+        };
+
+        decorateRankings();
+        const root = document.querySelector("#root");
+        if (!root) return;
+        const observer = new MutationObserver(decorateRankings);
+        observer.observe(root, { childList: true, subtree: true, characterData: true });
+      });
+    </script>
+    <script type="module" crossorigin src="/world-cup-2026-simulator/assets/index-qP4TIFNT.js"></script>
+    <link rel="stylesheet" crossorigin href="/world-cup-2026-simulator/assets/index-B85xBH5g.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
