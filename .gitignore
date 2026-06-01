@@ -1,3 +1,16 @@
 node_modules/
 dist/
 .DS_Store
+
+# Local project notes
+PROGRESSO.md
+PROGRESSO.local.md
+*.local.md
+
+# Secrets and private environment files
+.env
+.env.*
+*.pem
+*.key
+*.token
+secrets.*
